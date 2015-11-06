@@ -27,7 +27,7 @@ function numDecodingsInternal(s){
  * @return {number}
  */
 var numDecodings = function(s){
-  s = s.replace("0","");
+  s = s.replace(/0/g,"");
   if (s.length === 0)
     return 0;
 

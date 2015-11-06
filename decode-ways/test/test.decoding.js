@@ -37,6 +37,7 @@ describe('contain invalid chars', function(){
     {encoding: '0', numOfWays: 0},
     {encoding: '10', numOfWays: 1},
     {encoding: '02', numOfWays: 1},
+    {encoding: '00', numOfWays: 0},
   ];
 
   decodingWays.forEach(verifyDecodingWays);
