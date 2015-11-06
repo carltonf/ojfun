@@ -4,6 +4,7 @@ var assert = require('assert'),
 
 describe('basic cases', function(){
   var decodingWays = [
+    {encoding: '', numOfWays: 0},
     {encoding: '1', numOfWays: 1},
     {encoding: '2', numOfWays: 1},
     {encoding: '9', numOfWays: 1},
@@ -13,10 +14,10 @@ describe('basic cases', function(){
     {encoding: '25', numOfWays: 2},
   ];
 
-  for(var code of decodingWays){
+  decodingWays.forEach(function(code){
     it(`${code.encoding} -> ${code.numOfWays}`, function(){
-      assert(numDecodings(code.encoding),
-             code.numOfWays);
+      assert.strictEqual(numDecodings(code.encoding),
+                         code.numOfWays);
     });  
-  }
+  });
 });
