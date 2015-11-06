@@ -2,32 +2,36 @@
 
 var cache = {};
 
+function numDecodingsInternal(s){
+  if (s.length <= 1)
+      return 1;
+
+  var str1 = s.substr(1),
+      str2 = s.substr(2);
+  var headNum = Number( s.substr(0,2) );
+
+  cache[str1] = cache[str1] || numDecodingsInternal(str1);
+
+  if (headNum <= 26){
+    cache[str2] = cache[str2] || numDecodingsInternal(str2);
+
+    return cache[str1] + cache[str2];
+  }
+  else{
+    return cache[str1];
+  }
+}
+
 /**
  * @param {string} s
  * @return {number}
  */
 var numDecodings = function(s){
+  s = s.replace("0","");
   if (s.length === 0)
     return 0;
-  if (s.length === 1){
-    if (s == "0")
-      return 0;
-    else
-      return 1;
-  }
 
-  var headNum = Number( s.substr(0,2) );
-
-  cache[s.substr(1)] = cache[s.substr(1)] || numDecodings(s.substr(1));
-
-  if (headNum <= 26){
-    cache[s.substr(2)] = cache[s.substr(1)] || numDecodings(s.substr(2));
-
-    return cache[s.substr(1)] + cache[s.substr(2)];
-  }
-  else{
-    return numDecodings(s.substr(1));
-  }
+  return numDecodingsInternal(s);
 };
 
 module.exports = numDecodings;

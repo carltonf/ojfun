@@ -10,7 +10,6 @@ function verifyDecodingWays(code){
 
 describe('basic cases', function(){
   var decodingWays = [
-    {encoding: '0', numOfWays: 0},
     {encoding: '', numOfWays: 0},
     {encoding: '1', numOfWays: 1},
     {encoding: '2', numOfWays: 1},
@@ -27,7 +26,17 @@ describe('basic cases', function(){
 describe('complex cases', function(){
   var decodingWays = [
     {encoding: "4673351343232714528787622144828949686814115978657763689251918941228645575658338815495647817194659970",
-     numOfWays: 0},
+     numOfWays: 46080},
+  ];
+
+  decodingWays.forEach(verifyDecodingWays);
+})
+
+describe('contain invalid chars', function(){
+  var decodingWays = [
+    {encoding: '0', numOfWays: 0},
+    {encoding: '10', numOfWays: 1},
+    {encoding: '02', numOfWays: 1},
   ];
 
   decodingWays.forEach(verifyDecodingWays);
