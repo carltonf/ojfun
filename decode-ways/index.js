@@ -2,7 +2,14 @@
 
 var cache = {};
 
+// 0 is special! If there is a leading 0, then this branching is invalid.
+//
+// It appears that 0 is only valid following 1 or 2, two continuous 0s are
+// considered invalid.
 function numDecodingsInternal(s){
+  if (s.startsWith('0'))
+    return 0;
+
   if (s.length <= 1)
       return 1;
 
@@ -27,7 +34,8 @@ function numDecodingsInternal(s){
  * @return {number}
  */
 var numDecodings = function(s){
-  s = s.replace(/0/g,"");
+  // for recursion, the empty string is a good end point indicating a valid
+  // decoding way
   if (s.length === 0)
     return 0;
 
