@@ -2,11 +2,19 @@
 
 var cache = {};
 
+/**
+ * @param {string} s
+ * @return {number}
+ */
 var numDecodings = function(s){
   if (s.length === 0)
     return 0;
-  if (s.length === 1)
-    return 1;
+  if (s.length === 1){
+    if (s == "0")
+      return 0;
+    else
+      return 1;
+  }
 
   var headNum = Number( s.substr(0,2) );
 
@@ -23,4 +31,3 @@ var numDecodings = function(s){
 };
 
 module.exports = numDecodings;
-
