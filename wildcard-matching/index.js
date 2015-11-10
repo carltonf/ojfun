@@ -1,4 +1,16 @@
 // https://leetcode.com/problems/wildcard-matching/
+// p doesn't contain stars
+function indexOfWithoutStars(s, p){
+  var res = s.match(p.replace(/\?/g, '.'));
+
+  return res ? res.index : -1;
+}
+
+function endsWithWithoutStars(s, p){
+  var res = s.match( p.replace(/\?/g, '.') + '$' );
+
+  return res ? res.index : -1;
+}
 
 /**
  * @param {string} s
@@ -6,46 +18,61 @@
  * @return {boolean}
  */
 var isMatch = function(s, p) {
-  var sCursor = 0;
+  var pa = p.split('*').filter(substr => substr),
+      subPat = null;
 
-  for(var pCursor = 0; pCursor < p.length; pCursor++){
-    var c = p[pCursor];
+  // handle special cases
+  if (p === '*')
+    return true;
+  if (p === '')
+    return (s === '');
 
-    switch(c){
-    case '?':
-      sCursor++;
-      break;
-    case '*':
-      // iterate through all possibilities for wildcard
-
-      /*** Optimization
-       */
-      // compact all adjacent wildcards
-      while(p[pCursor] === '*')
-        pCursor++;
-
-      // allow equality so empty string is tested
-      while( sCursor <= s.length ){
-        if ( isMatch(s.substr(sCursor), p.substr(pCursor)) )
-          return true;
-
-        sCursor++;
-      }
+  // Handle the case p starts or ends with NO leading or ending star
+  if( p[0] !== '*' ){
+    subPat = pa.shift();
+    if( indexOfWithoutStars(s, subPat) !== 0 )
       return false;
-
-    default:
-      if (s[sCursor] !== c)
-        return false;
-      else
-        sCursor++;
+    else{
+      s = s.substring(subPat.length)
     }
   }
 
-  if(sCursor === s.length)
+  if( !p.endsWith('*') ){
+    if( pa.length > 0 ){
+      subPat = pa.pop();
+      if( endsWithWithoutStars(s, subPat) === -1)
+        return false;
+      else{
+        s = s.substr(0, s.length - subPat.length);
+      }
+    }
+    // case like 'ab'
+    else if (s.length === 0)
+      return true;
+    else
+      return false;
+  }
+
+  return isMatchSubPats(s, pa, 0);
+};
+
+function isMatchSubPats(s, pa, idx){
+  var subPat = null,
+      subPatMatchIdx = -1;
+
+  if ( idx === pa.length )
     return true;
+
+  subPat = pa[idx];
+  subPatMatchIdx = indexOfWithoutStars(s, subPat);
+
+  if ( subPatMatchIdx > - 1 )
+    // Theorem: if the first index doesn't create a match, no later index will
+    // create a match
+    return isMatchSubPats(s.substr( subPatMatchIdx + subPat.length), pa, idx + 1);
   else
     return false;
-};
+}
 
 // WARNING: cheated version with regexp
 function isMatchCheating(s, p){
