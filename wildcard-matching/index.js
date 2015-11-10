@@ -17,9 +17,16 @@ var isMatch = function(s, p) {
       break;
     case '*':
       // iterate through all possibilities for wildcard
+
+      /*** Optimization
+       */
+      // compact all adjacent wildcards
+      while(p[pCursor] === '*')
+        pCursor++;
+
       // allow equality so empty string is tested
       while( sCursor <= s.length ){
-        if ( isMatch(s.substr(sCursor), p.substr(pCursor+1)) )
+        if ( isMatch(s.substr(sCursor), p.substr(pCursor)) )
           return true;
 
         sCursor++;
@@ -42,7 +49,10 @@ var isMatch = function(s, p) {
 
 // WARNING: cheated version with regexp
 function isMatchCheating(s, p){
-  p = '^' + p.replace('?', '.').replace('*', '.*') + '$';
+  p = '^' + p.replace(/\?/, '.')
+    .replace(/\*+/g, '.*') + '$'; // compress multiple stars into one
+
+  console.log("new pattern is: " + p);
 
   return s.search(p) > -1;
 }
