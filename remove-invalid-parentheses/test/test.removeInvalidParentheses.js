@@ -42,6 +42,14 @@ describe('removeInvalidParentheses: ', function(){
     parenStrVerifier( parens );
   });
 
+  describe('samples on page', function(){
+    var parens = [
+      { str: "()())()", result: ["()()()", "(())()"] },
+      { str: "(a)())()", result: ["(a)()()", "(a())()"] },
+      { str: ")(", result: [""]  },
+    ]
+  })
+
   describe('|index| is 1', function(){});
 
 });

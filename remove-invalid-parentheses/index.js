@@ -1,71 +1,74 @@
 // https://leetcode.com/problems/remove-invalid-parentheses/
 
-// Theorem1: when index is 0, the current parens are balanced.
+// Theorem1: the current parens string is balanced iff the overall score is 0
+// and the score of every substr(0, l) is positive.
 //
-// Theorem2: the abs val of the index is the minimum number of invalid
+// Theorem2: the abs val of the score is the minimum number of invalid
 // parenthesizes. (Easily proved by Theorem1)
 
 // left paren: 1, right: -1, the total sum is the index
 //
 // @pa: parens array
-function calculateInBalanceIndex(pa){
-  return pa.reduce(function(index, p){
-    switch(p){
+function calculateScore(s){
+  var score = 0;
+
+  for(var c of s){
+    switch(c){
     case '(':
-      return index + 1;
+      score++;
+      break;
     case ')':
-      return index - 1;
+      score--;
+      break;
     default:
-      // simply ignore
-      return index;
-      // throw new Error(p +" should NOT occur!")
+      ; // simply ignore any other chars
     }
-  }, 0);
+  }
+
+  return score;
 }
 
-// create a more compact format, other than pa
+function reverseParenStr(s){
+  var res = '';
+
+  s = s.split('').reverse().join('');
+  for(var c of s){
+    switch(c){
+    case '(':
+      res += ')';
+      break;
+    case ')':
+      res += '(';
+      break;
+    default:
+      res += c
+    }
+  }
+
+  return res;
+}
 
 /**
  * @param {string} s
  * @return {string[]}
  */
 var removeInvalidParentheses = function(s) {
-  var pa = s.split(''),
-      paLen = pa.length,
-      index = calculateInBalanceIndex(pa),
-      removeNum = index < 0 ? (-index) : index,
+  var score = calculateScore(s),
+      removeNum = score < 0 ? (- score) : score,
       reversedp = false;
       res = [];
 
-  // if (index === 0)
-  //   return [s];
-
-  // convert the case where RParens are more thna LParens
-  if (index > 0){
-    pa.reverse();
-    pa = pa.map(paren => {
-      if(paren === '(')
-        return ')';
-      else
-        return '(';
-    });
-
+  // convert the case where RParens are more than LParens
+  if (score > 0){
+    s = reverseParenStr(s);
     reversedp = true;
   }
 
-  res = removeInvalidParenthesesInternal(0, pa, 0, removeNum);
+  res = removeInvalidParenthesesInternal(0, s, 0, removeNum);
 
   if (reversedp){
-    res = res.map(sol => {
-      return sol.split('').reverse().map(paren => {
-        if(paren === '(')
-          return ')';
-        else
-          return '(';
-      }).join('');
-    });
+    res = res.map(sol => reverseParenStr(sol));
   }
-
   
   // adjust output format
   if (res.length === 0){
@@ -75,12 +78,12 @@ var removeInvalidParentheses = function(s) {
   return res;
 };
 
-function removeInvalidParenthesesInternal(startIdx, pa, curIndex, removeNum){
+function removeInvalidParenthesesInternal(startIdx, s, curScore, removeNum){
   var res = [];
 
   // end condition
   if (removeNum === 0){
-    if ((curIndex + calculateInBalanceIndex(pa.slice(startIdx))) === 0){
+    if ((curIndex + calculateScore(pa.slice(startIdx))) === 0){
       debugger;
       
       // make sure at each position index is non-negative
@@ -146,5 +149,6 @@ function removeInvalidParenthesesInternal(startIdx, pa, curIndex, removeNum){
   return res;
 }
 
-module.exports.calculateInBalanceIndex = calculateInBalanceIndex;
+module.exports.calculateScore = calculateScore;
+module.exports.reverseParenStr = reverseParenStr;
 module.exports.removeInvalidParentheses = removeInvalidParentheses;
